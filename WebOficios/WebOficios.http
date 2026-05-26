@@ -1,0 +1,6 @@
+@WebOficios_HostAddress = http://localhost:5181
+
+GET {{WebOficios_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

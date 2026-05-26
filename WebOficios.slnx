@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="Oficios.Abstractions/Oficios.Abstractions.csproj" />
+  <Project Path="Oficios.Enums/Oficios.Enums.csproj" />
+  <Project Path="Oficios.Repository/Oficios.Repository.csproj" />
+  <Project Path="Oficios.WebApi/Oficios.WebApi.csproj" />
+  <Project Path="OficiosApplications/Oficios.Applications.csproj" />
+  <Project Path="OficiosDataAccess/Oficios.DataAccess.csproj" />
+  <Project Path="OficiosEntities/Oficios.Entities.csproj" />
+  <Project Path="OficiosServices/Oficios.Services.csproj" />
+  <Project Path="WebOficios/WebOficios.csproj" />
+</Solution>
