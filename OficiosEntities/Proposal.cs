@@ -16,7 +16,7 @@ namespace Oficios.Entities
         [ForeignKey(nameof(Worker))]
         public int WorkerId { get; set; }
 
-        public decimal ProposedBudget { get; set; }
+        public decimal ProposedBudget { get; set; } //presupuesto total 
 
         public string Message { get; set; } = null!;
 

@@ -13,6 +13,7 @@ namespace Oficios.Entities
         public Job()
         {
             Proposals = new HashSet<Proposal>();
+            Payments = new HashSet<Payment>();
         }
 
         public int Id { get; set; }
@@ -22,12 +23,11 @@ namespace Oficios.Entities
         public decimal EstimatedBudget { get; set; }
         public DateTime CreatedDate { get; set; }
        public JobStatus Status { get; set; }
-
         [ForeignKey(nameof(Client))]
         public int ClientId { get; set; }
         public virtual Client Client { get; set; } = null!;
         public virtual ICollection<Proposal> Proposals { get; set; }
-
+        public virtual ICollection<Payment> Payments { get; set; }
 
     }
 }

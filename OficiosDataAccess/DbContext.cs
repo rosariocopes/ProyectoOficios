@@ -16,22 +16,36 @@ namespace OficiosDataAccess
         public void Delete(int id)
         {
             var entity = _Items.FirstOrDefault(e => e.Id == id);
+            if (entity != null) { _Items.Remove(entity); }
+            _ctx.SaveChanges();
 
         }
 
         public IList<T> GetAll()
         {
-            throw new NotImplementedException();
+            return _Items.ToList();
         }
 
         public T GetById(int id)
         {
-            throw new NotImplementedException();
+            return _Items.FirstOrDefault(e => e.Id == id);
         }
 
         public T Save(T entity)
         {
-            throw new NotImplementedException();
+            if (entity.Id.Equals(0))
+            {
+                _Items.Add(entity);
+            }
+            else
+            {
+                var entityDb = GetById(entity.Id);
+                _ctx.Entry(entityDb).State = EntityState.Modified;
+                _Items.Update(entity);
+            }
+            _ctx.SaveChanges();
+            return entity;
         }
+        
     }
 }
