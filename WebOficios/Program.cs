@@ -23,7 +23,7 @@ builder.Services.AddDbContext<DbDataAccess>(options =>
 });
 
 builder.Services.AddScoped(typeof(IStringService), typeof(StringService));
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(Repository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IApplication<>), typeof(Application<>));
 builder.Services.AddScoped(typeof(IDbContext<>), typeof(DbContext<>));
 

@@ -8,11 +8,12 @@ namespace OficiosApplications
     }
     public class Application<T> : IApplication<T>
     {
-        private IRepository <T> _repository;
+        private IRepository<T> _repository;
         public Application(IRepository<T> repository)
         {
             _repository = repository;
         }
+
         public void Delete(int id)
         {
             _repository.Delete(id);

@@ -16,6 +16,8 @@ namespace Oficios.DataAccess
         public virtual DbSet<Proposal> Proposals { get; set; }
         public virtual DbSet<Profession> Professions { get; set; }
         public virtual DbSet <Review> Reviews { get; set; }
+        public virtual DbSet<Payment> Payments { get; set; }
+        public virtual DbSet<PaymentType> PaymentTypes { get; set; }
         public DbDataAccess(DbContextOptions<DbDataAccess> options) : base(options) { }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.LogTo(Console.WriteLine).EnableDetailedErrors();
 
