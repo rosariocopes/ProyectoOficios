@@ -29,7 +29,6 @@ namespace OficiosEntities
 
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; } = null!;
-
         public string Phone { get; set; } = null!;
 
         public virtual ICollection<Job> Jobs { get; set; }

@@ -6,5 +6,5 @@
   <Project Path="OficiosDataAccess/Oficios.DataAccess.csproj" />
   <Project Path="OficiosEntities/Oficios.Entities.csproj" />
   <Project Path="OficiosServices/Oficios.Services.csproj" />
-  <Project Path="WebOficios/WebOficios.csproj" />
+  <Project Path="WebOficios/Oficios.WebApi.csproj" />
 </Solution>

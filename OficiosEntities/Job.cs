@@ -1,5 +1,4 @@
 ﻿using Oficios.Abstractions;
-using Oficios.Enums;
 using OficiosEntities;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,7 +21,7 @@ namespace Oficios.Entities
         public string Address { get; set; } = null!;
         public decimal EstimatedBudget { get; set; }
         public DateTime CreatedDate { get; set; }
-       public JobStatus Status { get; set; }
+     //  public JobStatus Status { get; set; }
         [ForeignKey(nameof(Client))]
         public int ClientId { get; set; }
         public virtual Client Client { get; set; } = null!;
