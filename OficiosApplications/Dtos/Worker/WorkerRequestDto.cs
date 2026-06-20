@@ -17,6 +17,7 @@ namespace Oficios.Applications.Dtos.Worker
         public string Email { get; set; } = null!;
         [DataType(DataType.PhoneNumber)]
         public string Phone { get; set; } = null!;
+        public string dni { get; set; } = null!;
         public string? License { get; set; }
         public string City { get; set; } = null!;
         public string Description { get; set; } = null!;

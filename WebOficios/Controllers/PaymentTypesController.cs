@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Oficios.Applications.Dtos.Client;
-using Oficios.Applications.Dtos.Worker;
+using Oficios.Applications.Dtos.PaymentType;
+using Oficios.Applications.Dtos.PaymentType.Oficios.Applications.Dtos.PaymentType;
 using Oficios.Entities;
 using Oficios.Services;
 using OficiosApplications;
@@ -12,18 +13,18 @@ namespace Oficios.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class WorkersController : ControllerBase
+    public class PaymentTypesController : ControllerBase
     {
-        private readonly ILogger<WorkersController> _logger;
+        private readonly ILogger<PaymentTypesController> _logger;
         private readonly IStringService _stringService;
-        private readonly IApplication<Worker> _worker;
+        private readonly IApplication<PaymentType> _paymentType;
         private readonly IMapper _mapper;
-        public WorkersController(IApplication<Worker> worker
-            , ILogger<WorkersController> logger
+        public PaymentTypesController(IApplication<PaymentType> paymentType
+            , ILogger<PaymentTypesController> logger
             , IStringService stringService
             , IMapper mapper)
         {
-            _worker = worker;
+            _paymentType = paymentType;
             _logger = logger;
             _stringService = stringService;
             _mapper = mapper;
@@ -32,7 +33,7 @@ namespace Oficios.WebApi.Controllers
         [Route("All")]
         public async Task<IActionResult> All()
         {
-            return Ok(_mapper.Map<IList<WorkerResponseDto>>(_worker.GetAll()));
+            return Ok(_mapper.Map<IList<PaymentTypeResponseDto>>(_paymentType.GetAll()));
         }
 
         [HttpGet]
@@ -43,36 +44,36 @@ namespace Oficios.WebApi.Controllers
             {
                 return BadRequest();
             }
-            Worker worker = _worker.GetById(Id.Value);
-            if (worker is null)
+            PaymentType paymentType = _paymentType.GetById(Id.Value);
+            if (paymentType is null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<WorkerResponseDto>(worker));
+            return Ok(_mapper.Map<PaymentTypeResponseDto>(paymentType));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear(WorkerRequestDto workerRequestDto)
+        public async Task<IActionResult> Crear(PaymentTypeRequestDto paymentTypeRequestDto)
         {
             if (!ModelState.IsValid)
             { return BadRequest(); }
-            var worker = _mapper.Map<Worker>(workerRequestDto);
-            _worker.Save(worker);
-            return Ok(worker.Id);
+            var paymentType = _mapper.Map<PaymentType>(paymentTypeRequestDto);
+            _paymentType.Save(paymentType);
+            return Ok(paymentType.Id);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Editar(int? Id, WorkerRequestDto workerRequestDto)
+        public async Task<IActionResult> Editar(int? Id, PaymentTypeRequestDto paymentTypeRequestDto)
         {
             if (!Id.HasValue)
             { return BadRequest(); }
             if (!ModelState.IsValid)
             { return BadRequest(); }
-            Worker workerBack = _worker.GetById(Id.Value);
-            if (workerBack is null)
+            PaymentType paymentTypeBack = _paymentType.GetById(Id.Value);
+            if (paymentTypeBack is null)
             { return NotFound(); }
-            _mapper.Map(workerRequestDto, workerBack);
-            _worker.Save(workerBack);
+            _mapper.Map(paymentTypeRequestDto, paymentTypeBack);
+            _paymentType.Save(paymentTypeBack);
             return Ok();
         }
 
@@ -81,13 +82,12 @@ namespace Oficios.WebApi.Controllers
         {
             if (!Id.HasValue)
             { return BadRequest(); }
-            Worker workerBack = _worker.GetById(Id.Value);
-            if (workerBack is null)
+            PaymentType paymentTypeBack = _paymentType.GetById(Id.Value);
+            if (paymentTypeBack is null)
             { return NotFound(); }
-            _worker.Delete(workerBack.Id);
+            _paymentType.Delete(paymentTypeBack.Id);
             return Ok();
         }
     }
-
 }
 

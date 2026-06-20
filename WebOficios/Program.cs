@@ -3,6 +3,7 @@ using Oficios.Abstractions;
 using Oficios.DataAccess;
 using Oficios.Repository;
 using Oficios.Services;
+using Oficios.WebApi.Mapping;
 using OficiosApplications;
 using OficiosDataAccess;
 
@@ -21,7 +22,11 @@ builder.Services.AddDbContext<DbDataAccess>(options =>
             o => o.MigrationsAssembly("Oficios.WebApi"));
     options.UseLazyLoadingProxies();
 });
-
+builder.Services.AddAutoMapper(typeof(ClientMappingProfile));
+builder.Services.AddAutoMapper(typeof(WorkerMappingProfile));
+builder.Services.AddAutoMapper(typeof(JobMappingProfile));
+builder.Services.AddAutoMapper(typeof(ProfessionMappingProfile));
+builder.Services.AddAutoMapper(typeof(PaymentTypeMappingProfile));
 builder.Services.AddScoped(typeof(IStringService), typeof(StringService));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IApplication<>), typeof(Application<>));

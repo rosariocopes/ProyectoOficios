@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Oficios.WebApi.Migrations
 {
     /// <inheritdoc />
-    public partial class initialcreate : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -113,7 +113,7 @@ namespace Oficios.WebApi.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -231,14 +231,25 @@ namespace Oficios.WebApi.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Dni = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     License = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProfessionId = table.Column<int>(type: "int", nullable: false)
+                    ProfessionId = table.Column<int>(type: "int", nullable: false),
+                    ClientId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Workers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Workers_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Workers_Professions_ProfessionId",
                         column: x => x.ProfessionId,
@@ -257,14 +268,15 @@ namespace Oficios.WebApi.Migrations
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     JobId = table.Column<int>(type: "int", nullable: false),
-                    PaymentTypeId = table.Column<int>(type: "int", nullable: false)
+                    PaymentTypeId = table.Column<int>(type: "int", nullable: false),
+                    JobId1 = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Payments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Payments_Jobs_JobId",
-                        column: x => x.JobId,
+                        name: "FK_Payments_Jobs_JobId1",
+                        column: x => x.JobId1,
                         principalTable: "Jobs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
@@ -272,6 +284,12 @@ namespace Oficios.WebApi.Migrations
                         name: "FK_Payments_PaymentTypes_PaymentTypeId",
                         column: x => x.PaymentTypeId,
                         principalTable: "PaymentTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Payments_Workers_JobId",
+                        column: x => x.JobId,
+                        principalTable: "Workers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                 });
@@ -384,6 +402,11 @@ namespace Oficios.WebApi.Migrations
                 column: "JobId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Payments_JobId1",
+                table: "Payments",
+                column: "JobId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Payments_PaymentTypeId",
                 table: "Payments",
                 column: "PaymentTypeId");
@@ -407,6 +430,11 @@ namespace Oficios.WebApi.Migrations
                 name: "IX_Reviews_WorkerId",
                 table: "Reviews",
                 column: "WorkerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Workers_ClientId",
+                table: "Workers",
+                column: "ClientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Workers_ProfessionId",

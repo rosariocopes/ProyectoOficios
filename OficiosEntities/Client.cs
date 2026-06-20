@@ -6,11 +6,11 @@ namespace OficiosEntities
 {
     public class Client : IEntity
     {
-        //cliente que necesita un trabajo
+        //cliente que necesita que le realicen un trabajo
 
         public Client()
         {
-            Jobs = new HashSet<Job>();
+            Jobs = new HashSet<Worker>();
             Reviews = new HashSet<Review>();
         }
 
@@ -31,7 +31,7 @@ namespace OficiosEntities
         public string Email { get; set; } = null!;
         public string Phone { get; set; } = null!;
 
-        public virtual ICollection<Job> Jobs { get; set; }
+        public virtual ICollection<Worker> Jobs { get; set; }
 
         public virtual ICollection<Review> Reviews { get; set; }
     }

@@ -17,7 +17,7 @@ namespace Oficios.Entities
         public int JobId { get; set; }
         [ForeignKey(nameof(PaymentType))]
         public int PaymentTypeId { get; set; }
-        public virtual Job Job { get; set; } = null!;
+        public virtual Worker Job { get; set; } = null!;
         public virtual PaymentType PaymentType { get; set; } = null!;
     }
 }

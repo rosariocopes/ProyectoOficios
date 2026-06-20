@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Oficios.Applications.Dtos.Client;
+using Oficios.Applications.Dtos.Job;
+using Oficios.Entities;
 using Oficios.Services;
 using OficiosApplications;
 using OficiosEntities;
@@ -9,18 +12,18 @@ namespace Oficios.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ClientsController : ControllerBase
+    public class JobsController : ControllerBase
     {
-        private readonly ILogger<ClientsController> _logger;
+        private readonly ILogger<JobsController> _logger;
         private readonly IStringService _stringService;
-        private readonly IApplication<Client> _client;
+        private readonly IApplication<Job> _job;
         private readonly IMapper _mapper;
-        public ClientsController(IApplication<Client> client
-            , ILogger<ClientsController> logger
+        public JobsController(IApplication<Job> job
+            , ILogger<JobsController> logger
             , IStringService stringService
             , IMapper mapper)
         {
-            _client = client;
+            _job = job;
             _logger = logger;
             _stringService = stringService;
             _mapper = mapper;
@@ -29,7 +32,7 @@ namespace Oficios.WebApi.Controllers
         [Route("All")]
         public async Task<IActionResult> All()
         {
-            return Ok(_mapper.Map<IList<ClientResponseDto>>(_client.GetAll()));
+            return Ok(_mapper.Map<IList<JobResponseDto>>(_job.GetAll()));
         }
 
         [HttpGet]
@@ -40,36 +43,36 @@ namespace Oficios.WebApi.Controllers
             {
                 return BadRequest();
             }
-            Client client = _client.GetById(Id.Value);
-            if (client is null)
+            Job job = _job.GetById(Id.Value);
+            if (job is null)
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<ClientResponseDto>(client));
+            return Ok(_mapper.Map<JobResponseDto>(job));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear(ClientRequestDto clientRequestDto)
+        public async Task<IActionResult> Crear(JobRequestDto jobRequestDto)
         {
             if (!ModelState.IsValid)
             { return BadRequest(); }
-            var client = _mapper.Map<Client>(clientRequestDto);
-            _client.Save(client);
-            return Ok(client.Id);
+            var job = _mapper.Map<Job>(jobRequestDto);
+            _job.Save(job);
+            return Ok(job.Id);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Editar(int? Id, ClientRequestDto clientRequestDto)
+        public async Task<IActionResult> Editar(int? Id, JobRequestDto jobRequestDto)
         {
             if (!Id.HasValue)
             { return BadRequest(); }
             if (!ModelState.IsValid)
             { return BadRequest(); }
-            Client clientBack = _client.GetById(Id.Value);
-            if (clientBack is null)
+            Job jobBack = _job.GetById(Id.Value);
+            if (jobBack is null)
             { return NotFound(); }
-            _mapper.Map(clientRequestDto, clientBack);
-            _client.Save(clientBack);
+            _mapper.Map(jobRequestDto, jobBack);
+            _job.Save(jobBack);
             return Ok();
         }
 
@@ -78,11 +81,13 @@ namespace Oficios.WebApi.Controllers
         {
             if (!Id.HasValue)
             { return BadRequest(); }
-            Client clientBack = _client.GetById(Id.Value);
-            if (clientBack is null)
+            Job jobBack = _job.GetById(Id.Value);
+            if (jobBack is null)
             { return NotFound(); }
-            _client.Delete(clientBack.Id);
+            _job.Delete(jobBack.Id);
             return Ok();
         }
     }
+
 }
+ 

@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Oficios.Applications.Dtos.Profession
+namespace Oficios.Applications.Dtos.PaymentType
 {
-    public class ProfessionResponseDto
+    public class PaymentTypeRequestDto
     {
         public string Name { get; set; } = null!;
-        public string Description { get; set; } = null!;
     }
 }

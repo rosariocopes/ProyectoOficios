@@ -277,6 +277,9 @@ namespace Oficios.WebApi.Migrations
                     b.Property<int>("JobId")
                         .HasColumnType("int");
 
+                    b.Property<int>("JobId1")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
@@ -286,6 +289,8 @@ namespace Oficios.WebApi.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("JobId");
+
+                    b.HasIndex("JobId1");
 
                     b.HasIndex("PaymentTypeId");
 
@@ -408,17 +413,42 @@ namespace Oficios.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Dni")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("License")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ProfessionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
 
                     b.HasIndex("ProfessionId");
 
@@ -517,7 +547,7 @@ namespace Oficios.WebApi.Migrations
             modelBuilder.Entity("Oficios.Entities.Job", b =>
                 {
                     b.HasOne("OficiosEntities.Client", "Client")
-                        .WithMany("Jobs")
+                        .WithMany()
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -527,9 +557,15 @@ namespace Oficios.WebApi.Migrations
 
             modelBuilder.Entity("Oficios.Entities.Payment", b =>
                 {
-                    b.HasOne("Oficios.Entities.Job", "Job")
-                        .WithMany("Payments")
+                    b.HasOne("Oficios.Entities.Worker", "Job")
+                        .WithMany()
                         .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Oficios.Entities.Job", null)
+                        .WithMany("Payments")
+                        .HasForeignKey("JobId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -584,6 +620,10 @@ namespace Oficios.WebApi.Migrations
 
             modelBuilder.Entity("Oficios.Entities.Worker", b =>
                 {
+                    b.HasOne("OficiosEntities.Client", null)
+                        .WithMany("Jobs")
+                        .HasForeignKey("ClientId");
+
                     b.HasOne("Oficios.Entities.Profession", "Profession")
                         .WithMany("Workers")
                         .HasForeignKey("ProfessionId")

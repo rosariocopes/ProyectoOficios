@@ -11,12 +11,7 @@ namespace Oficios.Entities
     public class Worker : IEntity
     {
         //trabajador que ofrece servicios
-        public Worker()
-        {
-            Proposals = new HashSet<Proposal>();
-            Reviews = new HashSet<Review>();
-        }
-
+       
         public int Id { get; set; }
         public string Name { get; set; } = null!;
         public string LastName { get; set; } = null!;
@@ -36,5 +31,6 @@ namespace Oficios.Entities
         public virtual ICollection<Proposal> Proposals { get; set; }
 
         public virtual ICollection<Review> Reviews { get; set; }
+       
     }
 }
