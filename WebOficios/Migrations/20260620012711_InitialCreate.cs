@@ -113,7 +113,7 @@ namespace Oficios.WebApi.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -285,7 +285,7 @@ namespace Oficios.WebApi.Migrations
                         column: x => x.PaymentTypeId,
                         principalTable: "PaymentTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Payments_Workers_JobId",
                         column: x => x.JobId,
