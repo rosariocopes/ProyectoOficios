@@ -289,9 +289,6 @@ namespace Oficios.WebApi.Migrations
                     b.Property<int>("JobId")
                         .HasColumnType("int");
 
-                    b.Property<int>("JobId1")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
@@ -301,8 +298,6 @@ namespace Oficios.WebApi.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("JobId");
-
-                    b.HasIndex("JobId1");
 
                     b.HasIndex("PaymentTypeId");
 
@@ -425,9 +420,6 @@ namespace Oficios.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ClientId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -458,11 +450,15 @@ namespace Oficios.WebApi.Migrations
                     b.Property<int>("ProfessionId")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
-
                     b.HasIndex("ProfessionId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Workers");
                 });
@@ -500,7 +496,13 @@ namespace Oficios.WebApi.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Clients");
                 });
@@ -508,7 +510,7 @@ namespace Oficios.WebApi.Migrations
             modelBuilder.Entity("Oficios.Entities.Job", b =>
                 {
                     b.HasOne("OficiosEntities.Client", "Client")
-                        .WithMany()
+                        .WithMany("Jobs")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -569,15 +571,9 @@ namespace Oficios.WebApi.Migrations
 
             modelBuilder.Entity("Oficios.Entities.Payment", b =>
                 {
-                    b.HasOne("Oficios.Entities.Worker", "Job")
-                        .WithMany()
-                        .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Oficios.Entities.Job", null)
+                    b.HasOne("Oficios.Entities.Job", "Job")
                         .WithMany("Payments")
-                        .HasForeignKey("JobId1")
+                        .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -632,17 +628,32 @@ namespace Oficios.WebApi.Migrations
 
             modelBuilder.Entity("Oficios.Entities.Worker", b =>
                 {
-                    b.HasOne("OficiosEntities.Client", null)
-                        .WithMany("Jobs")
-                        .HasForeignKey("ClientId");
-
                     b.HasOne("Oficios.Entities.Profession", "Profession")
                         .WithMany("Workers")
                         .HasForeignKey("ProfessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Oficios.Entities.MicrosoftEntity.User", "User")
+                        .WithOne()
+                        .HasForeignKey("Oficios.Entities.Worker", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Profession");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OficiosEntities.Client", b =>
+                {
+                    b.HasOne("Oficios.Entities.MicrosoftEntity.User", "User")
+                        .WithOne()
+                        .HasForeignKey("OficiosEntities.Client", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Oficios.Entities.Job", b =>

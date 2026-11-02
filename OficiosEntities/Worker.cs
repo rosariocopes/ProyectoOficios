@@ -1,4 +1,5 @@
 ﻿using Oficios.Abstractions;
+using Oficios.Entities.MicrosoftEntity;
 using OficiosEntities;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,10 @@ namespace Oficios.Entities
         //trabajador que ofrece servicios
        
         public int Id { get; set; }
+        [ForeignKey(nameof(User))]
+        public Guid UserId { get; set; }
+
+        public virtual User User { get; set; } = null!;
         public string Name { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public string Dni { get; set; } = null!;
