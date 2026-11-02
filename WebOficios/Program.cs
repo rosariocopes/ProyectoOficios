@@ -19,6 +19,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+//CORS
+const string FrontendCorsPolicy = "Frontend";
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+builder.Services.AddCors(options =>
+{ options.AddPolicy(FrontendCorsPolicy, policy =>
+    policy.WithOrigins(allowedOrigins)
+    .AllowAnyHeader()
+    .AllowAnyMethod());
+
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -90,6 +101,7 @@ builder.Services.AddScoped(typeof(IStringService), typeof(StringService));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IApplication<>), typeof(Application<>));
 builder.Services.AddScoped(typeof(IDbContext<>), typeof(DbContext<>));
+builder.Services.AddScoped(typeof(ITokenHandlerService), typeof(TokenHandlerService));
 
 
 var app = builder.Build();
@@ -101,9 +113,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseCors(FrontendCorsPolicy);
+
+app.UseAuthentication();   // valida el JWT del header Authorization y arma el User
+app.UseAuthorization();    // aplica los [Authorize] de los controllers
 
 app.MapControllers();
 
