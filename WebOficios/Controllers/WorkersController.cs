@@ -12,7 +12,7 @@ using OficiosEntities;
 
 namespace Oficios.WebApi.Controllers
 {
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class WorkersController : ControllerBase
@@ -20,13 +20,16 @@ namespace Oficios.WebApi.Controllers
         private readonly ILogger<WorkersController> _logger;
         private readonly IStringService _stringService;
         private readonly IApplication<Worker> _worker;
+        private readonly IApplication<Review> _review;
         private readonly IMapper _mapper;
         public WorkersController(IApplication<Worker> worker
             , ILogger<WorkersController> logger
+            , IApplication<Review> review
             , IStringService stringService
             , IMapper mapper)
         {
             _worker = worker;
+            _review = review;
             _logger = logger;
             _stringService = stringService;
             _mapper = mapper;
@@ -35,7 +38,33 @@ namespace Oficios.WebApi.Controllers
         [Route("All")]
         public async Task<IActionResult> All()
         {
-            return Ok(_mapper.Map<IList<WorkerResponseDto>>(_worker.GetAll()));
+            var trabajadores = _worker.GetAll();
+
+            var reseñas = _review.GetAll();
+
+            var resultado = trabajadores.Select(w => new WorkerResponseDto
+            {
+                Id = w.Id,
+                Name = w.Name,
+                LastName = w.LastName,
+                Dni = w.Dni,
+                Description = w.Description,
+                License = w.License,
+                Phone = w.Phone,
+                Email = w.Email,
+                Profession = w.Profession.Name,
+                City = w.City,
+                ReviewCount = reseñas.Count(r => r.WorkerId == w.Id),
+                AverageScore = reseñas
+                    .Where(r => r.WorkerId == w.Id)
+                    .Any()
+                        ? (decimal)reseñas
+                            .Where(r => r.WorkerId == w.Id)
+                            .Average(r => r.Score)
+                        : 0
+            });
+
+            return Ok(resultado);
         }
 
         [HttpGet]

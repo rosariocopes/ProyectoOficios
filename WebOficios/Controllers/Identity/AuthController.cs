@@ -180,7 +180,8 @@ namespace Oficios.WebApi.Controllers.Identity
                                 Login = true,
                                 Token = jwt,
                                 UserName = existeUsuario.UserName,
-                                Mail = existeUsuario.Email
+                                Mail = existeUsuario.Email,
+                                Role = roles.FirstOrDefault()
                             });
                         }
                         catch (Exception)

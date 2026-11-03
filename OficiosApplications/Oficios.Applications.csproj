@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Oficios.Abstractions\Oficios.Abstractions.csproj" />
+    <ProjectReference Include="..\Oficios.Enums\Oficios.Enums.csproj" />
     <ProjectReference Include="..\Oficios.Repository\Oficios.Repository.csproj" />
   </ItemGroup>
 

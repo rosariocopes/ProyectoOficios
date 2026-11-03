@@ -9,8 +9,13 @@ namespace Oficios.WebApi.Mapping
     {
         public JobMappingProfile()
         {
-            CreateMap<Job, JobResponseDto>().
-                ForMember(dest => dest.Client, opt => opt.MapFrom(src => src.Client.Name));
+            CreateMap<Job, JobResponseDto>()
+                .ForMember(dest => dest.Client,
+                    opt => opt.MapFrom(src =>
+                        src.Client.Name + " " + src.Client.LastName))
+                .ForMember(dest => dest.Profession,
+                    opt => opt.MapFrom(src => src.Profession.Name));
+
             CreateMap<JobRequestDto, Job>();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Oficios.Abstractions;
+using Oficios.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Oficios.Entities
@@ -15,17 +16,16 @@ namespace Oficios.Entities
 
         [ForeignKey(nameof(Worker))]
         public int WorkerId { get; set; }
-
+        public decimal LaborCost { get; set; }
+        public decimal EstimatedMaterialsCost { get; set; }
         public decimal ProposedBudget { get; set; }
-
         public string Message { get; set; } = null!;
-
+        public string? ClientResponse { get; set; }
+        public DateTime? ResponseDate { get; set; }
         public DateTime CreatedDate { get; set; }
-
-        public bool IsAccepted { get; set; }
-
+        public ProposalStatus Status { get; set; }
+            = ProposalStatus.Pendiente;
         public virtual Job Job { get; set; } = null!;
-
         public virtual Worker Worker { get; set; } = null!;
     }
 

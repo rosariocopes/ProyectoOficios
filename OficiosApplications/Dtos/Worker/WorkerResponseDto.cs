@@ -17,5 +17,8 @@ namespace Oficios.Applications.Dtos.Worker
         public string Phone { get; set; }
         public string Email{ get; set; }  
         public string Profession { get; set; }
+        public string City { get; set; }
+        public decimal AverageScore { get; set; }
+        public int ReviewCount { get; set; }
     }
 }

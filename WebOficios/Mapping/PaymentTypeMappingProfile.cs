@@ -5,8 +5,7 @@ using Oficios.Entities;
 
 namespace Oficios.WebApi.Mapping
 {
-    
-        public class PaymentTypeMappingProfile : Profile
+       public class PaymentTypeMappingProfile : Profile
         {
             public PaymentTypeMappingProfile()
             {
