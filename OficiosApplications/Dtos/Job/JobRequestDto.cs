@@ -11,7 +11,8 @@ namespace Oficios.Applications.Dtos.Job
         public string Title { get; set; }
         public string Description { get; set; }
         public string Address { get; set; }
-        public int ClientId { get; set; }
+        public decimal EstimatedBudget { get; set; }
+        public int ProfessionId { get; set; }
 
     }
 }

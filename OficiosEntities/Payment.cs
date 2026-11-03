@@ -1,20 +1,21 @@
 ﻿using Oficios.Abstractions;
-using System;
-using System.Collections.Generic;
+using Oficios.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace Oficios.Entities
 {
     public class Payment : IEntity
     {
         public int Id { get; set; }
-        public decimal Amount { get; set; } //pago parcial o total del trabajo, dependiendo de lo acordado entre el cliente y el trabajador.
+        public decimal Amount { get; set; }
         public DateTime PaymentDate { get; set; }
         public string Description { get; set; } = null!;
+        public PaymentStatus Status { get; set; }
+            = PaymentStatus.Pendiente;
 
         [ForeignKey(nameof(Job))]
         public int JobId { get; set; }
+
         [ForeignKey(nameof(PaymentType))]
         public int PaymentTypeId { get; set; }
         public virtual Job Job { get; set; } = null!;

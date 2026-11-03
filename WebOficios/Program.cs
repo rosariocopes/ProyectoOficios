@@ -97,6 +97,7 @@ builder.Services.AddAutoMapper(typeof(WorkerMappingProfile));
 builder.Services.AddAutoMapper(typeof(JobMappingProfile));
 builder.Services.AddAutoMapper(typeof(ProfessionMappingProfile));
 builder.Services.AddAutoMapper(typeof(PaymentTypeMappingProfile));
+builder.Services.AddAutoMapper(typeof(ProposalMappingProfile));
 builder.Services.AddScoped(typeof(IStringService), typeof(StringService));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IApplication<>), typeof(Application<>));

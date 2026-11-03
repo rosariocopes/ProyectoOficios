@@ -50,6 +50,12 @@ namespace Oficios.WebApi.Migrations
                     b.Property<decimal>("EstimatedBudget")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("ProfessionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -57,6 +63,8 @@ namespace Oficios.WebApi.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("ProfessionId");
 
                     b.ToTable("Jobs");
                 });
@@ -295,6 +303,9 @@ namespace Oficios.WebApi.Migrations
                     b.Property<int>("PaymentTypeId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("JobId");
@@ -350,14 +361,20 @@ namespace Oficios.WebApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ClientResponse")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsAccepted")
-                        .HasColumnType("bit");
+                    b.Property<decimal>("EstimatedMaterialsCost")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("JobId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("LaborCost")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Message")
                         .IsRequired()
@@ -365,6 +382,12 @@ namespace Oficios.WebApi.Migrations
 
                     b.Property<decimal>("ProposedBudget")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("ResponseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<int>("WorkerId")
                         .HasColumnType("int");
@@ -386,12 +409,21 @@ namespace Oficios.WebApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<Guid>("AuthorUserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<string>("Comment")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Score")
                         .HasColumnType("int");
@@ -401,7 +433,11 @@ namespace Oficios.WebApi.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AuthorUserId");
+
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("JobId");
 
                     b.HasIndex("WorkerId");
 
@@ -515,7 +551,15 @@ namespace Oficios.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Oficios.Entities.Profession", "Profession")
+                        .WithMany()
+                        .HasForeignKey("ProfessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Client");
+
+                    b.Navigation("Profession");
                 });
 
             modelBuilder.Entity("Oficios.Entities.MicrosoftEntity.RoleClaim", b =>
@@ -609,9 +653,21 @@ namespace Oficios.WebApi.Migrations
 
             modelBuilder.Entity("Oficios.Entities.Review", b =>
                 {
+                    b.HasOne("Oficios.Entities.MicrosoftEntity.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("OficiosEntities.Client", "Client")
                         .WithMany("Reviews")
                         .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Oficios.Entities.Job", "Job")
+                        .WithMany("Reviews")
+                        .HasForeignKey("JobId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -621,7 +677,11 @@ namespace Oficios.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Author");
+
                     b.Navigation("Client");
+
+                    b.Navigation("Job");
 
                     b.Navigation("Worker");
                 });
@@ -661,6 +721,8 @@ namespace Oficios.WebApi.Migrations
                     b.Navigation("Payments");
 
                     b.Navigation("Proposals");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("Oficios.Entities.PaymentType", b =>
