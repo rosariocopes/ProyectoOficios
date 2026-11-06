@@ -10,7 +10,6 @@ namespace Oficios.Entities
 {
     public class Review : IEntity
     {
-        //reseñas que los clientes dejan a los trabajadores luego de que se complete un trabajo, con una puntuación y un comentario y viceversa
         public int Id { get; set; }
         public int Score { get; set; }
         public string Comment { get; set; } = null!;
@@ -27,8 +26,9 @@ namespace Oficios.Entities
 
         [ForeignKey(nameof(Author))]
         public Guid AuthorUserId { get; set; }
+
         public virtual Job Job { get; set; } = null!;
-       public virtual Client Client { get; set; } = null!;
+        public virtual Client Client { get; set; } = null!;
         public virtual Worker Worker { get; set; } = null!;
         public virtual User Author { get; set; } = null!;
     }

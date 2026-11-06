@@ -23,14 +23,17 @@ namespace Oficios.WebApi.Controllers
         private readonly IApplication<Worker> _worker;
         private readonly IMapper _mapper;
         private readonly IApplication<Client> _client;
+        private readonly IApplication<Notification> _notification;
 
         public ProposalsController(
-            IApplication<Proposal> proposal,
-            IApplication<Job> job,
-            IApplication<Worker> worker,
-            ILogger<ProposalsController> logger,
-            IStringService stringService,
-            IMapper mapper, IApplication<Client> client)
+    IApplication<Proposal> proposal,
+    IApplication<Job> job,
+    IApplication<Worker> worker,
+    ILogger<ProposalsController> logger,
+    IStringService stringService,
+    IMapper mapper,
+    IApplication<Client> client,
+    IApplication<Notification> notification)
         {
             _proposal = proposal;
             _job = job;
@@ -39,6 +42,7 @@ namespace Oficios.WebApi.Controllers
             _stringService = stringService;
             _client = client;
             _mapper = mapper;
+            _notification = notification;
         }
 
         private Worker ObtenerTrabajadorAutenticado()
@@ -224,87 +228,139 @@ namespace Oficios.WebApi.Controllers
         [HttpPut]
         [Route("Aceptar")]
         [Authorize(Roles = "Cliente")]
-        public async Task<IActionResult> Aceptar(int? Id)
+        public IActionResult Aceptar(int? Id)
         {
             if (!Id.HasValue)
-            { return BadRequest(); }
+                return BadRequest();
 
             Client client = ObtenerClienteAutenticado();
 
             if (client is null)
-            { return Unauthorized(); }
+                return Unauthorized();
 
             Proposal proposal = _proposal.GetById(Id.Value);
 
             if (proposal is null)
-            { return NotFound(); }
+                return NotFound();
 
             Job job = _job.GetById(proposal.JobId);
 
             if (job is null)
-            { return NotFound("No se encontró el trabajo."); }
+                return NotFound("No se encontró el trabajo.");
 
             if (job.ClientId != client.Id)
-            { return Forbid(); }
+                return Forbid();
 
             if (proposal.Status != ProposalStatus.Pendiente)
-            { return BadRequest("La propuesta ya fue respondida."); }
+                return BadRequest("La propuesta ya fue respondida.");
+
+            if (job.Status != JobStatus.Publicado)
+                return BadRequest("El trabajo ya no está disponible para aceptar propuestas.");
 
             var propuestas = _proposal.GetAll()
                 .Where(p => p.JobId == proposal.JobId &&
-                            p.Status == ProposalStatus.Pendiente);
+                            p.Status == ProposalStatus.Pendiente)
+                .ToList();
 
             foreach (var item in propuestas)
             {
+                item.ResponseDate = DateTime.UtcNow;
+
                 if (item.Id == proposal.Id)
                 {
                     item.Status = ProposalStatus.Aceptada;
+                    item.ClientResponse = "El cliente aceptó tu propuesta.";
+
+                    var notificacion = new Notification
+                    {
+                        WorkerId = item.WorkerId,
+                        Title = "¡Propuesta aceptada!",
+                        Message = $"El cliente aceptó tu propuesta para el trabajo '{job.Title}'.",
+                        CreatedDate = DateTime.UtcNow,
+                        IsRead = false
+                    };
+
+                    _notification.Save(notificacion);
                 }
                 else
                 {
                     item.Status = ProposalStatus.Rechazada;
+                    item.ClientResponse = "El cliente seleccionó otra propuesta.";
+
+                    var notificacion = new Notification
+                    {
+                        WorkerId = item.WorkerId,
+                        Title = "Propuesta rechazada",
+                        Message = $"Tu propuesta para el trabajo '{job.Title}' fue rechazada porque el cliente seleccionó otra propuesta.",
+                        CreatedDate = DateTime.UtcNow,
+                        IsRead = false
+                    };
+
+                    _notification.Save(notificacion);
                 }
 
                 _proposal.Save(item);
             }
 
+            // Cambiar el estado del trabajo a EnProceso.
+            job.Status = JobStatus.EnProceso;
+
+            _job.Save(job);
+
             return Ok();
         }
+
+
         [HttpPut]
         [Route("Rechazar")]
         [Authorize(Roles = "Cliente")]
-        public async Task<IActionResult> Rechazar(int? Id)
+        public IActionResult Rechazar(int? Id)
         {
             if (!Id.HasValue)
-            { return BadRequest(); }
+                return BadRequest();
 
             Client client = ObtenerClienteAutenticado();
 
             if (client is null)
-            { return Unauthorized(); }
+                return Unauthorized();
 
             Proposal proposal = _proposal.GetById(Id.Value);
 
             if (proposal is null)
-            { return NotFound(); }
+                return NotFound();
 
             Job job = _job.GetById(proposal.JobId);
 
             if (job is null)
-            { return NotFound("No se encontró el trabajo."); }
+                return NotFound("No se encontró el trabajo.");
 
             if (job.ClientId != client.Id)
-            { return Forbid(); }
+                return Forbid();
 
             if (proposal.Status != ProposalStatus.Pendiente)
-            { return BadRequest("La propuesta ya fue respondida."); }
+                return BadRequest("La propuesta ya fue respondida.");
 
             proposal.Status = ProposalStatus.Rechazada;
+            proposal.ClientResponse = "El cliente rechazó tu propuesta.";
+            proposal.ResponseDate = DateTime.UtcNow;
 
             _proposal.Save(proposal);
 
+            var notificacion = new Notification
+            {
+                WorkerId = proposal.WorkerId,
+                Title = "Propuesta rechazada",
+                Message = $"Tu propuesta para el trabajo '{job.Title}' fue rechazada por el cliente.",
+                CreatedDate = DateTime.UtcNow,
+                IsRead = false
+            };
+
+            _notification.Save(notificacion);
+
             return Ok();
         }
+
+
         [HttpGet]
         [Route("PropuestasRecibidas")]
         [Authorize(Roles = "Cliente")]

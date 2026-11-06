@@ -1,18 +1,13 @@
 ﻿using Oficios.Abstractions;
 using Oficios.Entities.MicrosoftEntity;
-using OficiosEntities;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
-using System.Threading.Tasks.Dataflow;
 
 namespace Oficios.Entities
 {
     public class Worker : IEntity
     {
         //trabajador que ofrece servicios
-       
+
         public int Id { get; set; }
         [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
@@ -36,6 +31,8 @@ namespace Oficios.Entities
         public virtual ICollection<Proposal> Proposals { get; set; }
 
         public virtual ICollection<Review> Reviews { get; set; }
-       
+        public virtual ICollection<Notification> Notifications { get; set; }
+         = new HashSet<Notification>();
+
     }
 }

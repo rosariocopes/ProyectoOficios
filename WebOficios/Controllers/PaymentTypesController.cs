@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Oficios.Applications.Dtos.Client;
 using Oficios.Applications.Dtos.PaymentType;
-using Oficios.Applications.Dtos.PaymentType.Oficios.Applications.Dtos.PaymentType;
 using Oficios.Entities;
 using Oficios.Services;
 using OficiosApplications;

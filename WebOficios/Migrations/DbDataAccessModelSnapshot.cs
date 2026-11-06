@@ -279,6 +279,38 @@ namespace Oficios.WebApi.Migrations
                     b.ToTable("UserToken", (string)null);
                 });
 
+            modelBuilder.Entity("Oficios.Entities.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("WorkerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkerId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("Oficios.Entities.Payment", b =>
                 {
                     b.Property<int>("Id")
@@ -297,10 +329,19 @@ namespace Oficios.WebApi.Migrations
                     b.Property<int>("JobId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("PaymentConfirmedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("PaymentReportedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("PaymentTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProposalId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -311,6 +352,8 @@ namespace Oficios.WebApi.Migrations
                     b.HasIndex("JobId");
 
                     b.HasIndex("PaymentTypeId");
+
+                    b.HasIndex("ProposalId");
 
                     b.ToTable("Payments");
                 });
@@ -613,6 +656,17 @@ namespace Oficios.WebApi.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Oficios.Entities.Notification", b =>
+                {
+                    b.HasOne("Oficios.Entities.Worker", "Worker")
+                        .WithMany("Notifications")
+                        .HasForeignKey("WorkerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Worker");
+                });
+
             modelBuilder.Entity("Oficios.Entities.Payment", b =>
                 {
                     b.HasOne("Oficios.Entities.Job", "Job")
@@ -627,9 +681,17 @@ namespace Oficios.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Oficios.Entities.Proposal", "Proposal")
+                        .WithMany()
+                        .HasForeignKey("ProposalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Job");
 
                     b.Navigation("PaymentType");
+
+                    b.Navigation("Proposal");
                 });
 
             modelBuilder.Entity("Oficios.Entities.Proposal", b =>
@@ -737,6 +799,8 @@ namespace Oficios.WebApi.Migrations
 
             modelBuilder.Entity("Oficios.Entities.Worker", b =>
                 {
+                    b.Navigation("Notifications");
+
                     b.Navigation("Proposals");
 
                     b.Navigation("Reviews");

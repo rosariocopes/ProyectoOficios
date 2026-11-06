@@ -17,6 +17,9 @@ namespace Oficios.Applications.Dtos.Job
         public DateTime CreatedDate { get; set; }
         public JobStatus Status { get; set; }
         public string Profession { get; set; } = null!;
+        public int ClientId { get; set; }
         public string Client { get; set; } = null!;
+        public double AverageScore { get; set; }
+        public int ReviewCount { get; set; }
     }
 }

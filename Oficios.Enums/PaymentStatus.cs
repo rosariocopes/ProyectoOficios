@@ -10,6 +10,7 @@ namespace Oficios.Enums
     {
         Pendiente = 1,
         Pagado = 2,
-        Cancelado = 3
+        Cancelado = 3,
+        InformadoPorCliente = 4
     }
 }

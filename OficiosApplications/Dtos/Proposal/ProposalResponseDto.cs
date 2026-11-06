@@ -19,5 +19,7 @@ namespace Oficios.Applications.Dtos.Proposal
         public string Message { get; set; } = null!;
         public DateTime CreatedDate { get; set; }
         public ProposalStatus Status { get; set; }
+        public string JobTitle { get; set; } = null!;
+        public JobStatus JobStatus { get; set; }
     }
 }
